@@ -18,4 +18,10 @@
         <item name="android:windowBackground">@color/splash_bg</item>
         <item name="android:statusBarColor">@color/splash_bg</item>
     </style>
+
+    <style name="BottomTheme" parent="Theme.MaterialComponents">
+        <item name="colorPrimary">@color/splash_bg</item>
+        <item name="colorPrimaryVariant">@color/splash_bg</item>
+        <item name="colorOnPrimary">@color/white</item>
+    </style>
 </resources>
