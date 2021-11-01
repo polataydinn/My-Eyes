@@ -9,19 +9,26 @@ import android.speech.SpeechRecognizer
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import com.example.myeyes.R
 import com.example.myeyes.databinding.ActivityMainBinding
+import com.example.myeyes.presentation.ui.fragment.CameraFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import java.util.ArrayList
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var speechRecognizer: SpeechRecognizer
     private lateinit var intentRecognizer: Intent
+    private lateinit var navController: NavController
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,12 +36,35 @@ class MainActivity : AppCompatActivity() {
         setTheme(R.style.Theme_MyEyes)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.bottomNavigation.background = null
+
+        val navView: BottomNavigationView = binding.bottomNavigation
+        navController = findNavController(R.id.fragmentContainerView)
+
+        AppBarConfiguration.Builder(
+            setOf(
+                R.id.homeFragment,
+                R.id.personFragment
+            )
+        ).build()
+        navView.setupWithNavController(navController)
+
+        binding.camera.setOnClickListener {
+            val cameraFragment = CameraFragment()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainerView, cameraFragment)
+                .commit()
+        }
+
+
         setUserPermissions()
         intentRecognizer = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         intentRecognizer.putExtra(
             RecognizerIntent.EXTRA_LANGUAGE_MODEL,
             RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
         )
+
 
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this)
         speechRecognizer.setRecognitionListener(object : RecognitionListener {
@@ -65,9 +95,9 @@ class MainActivity : AppCompatActivity() {
             override fun onResults(bundle: Bundle?) {
                 val matches: ArrayList<String>? =
                     bundle?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-                if (matches != null) {
-                    binding.textView.text = matches.get(0)
-                }
+//                if (matches != null) {
+//                    binding.textView.text = matches.get(0)
+//                }
             }
 
             override fun onPartialResults(p0: Bundle?) {
@@ -80,13 +110,13 @@ class MainActivity : AppCompatActivity() {
 
         })
 
-        binding.startButton.setOnClickListener {
-            speechRecognizer.startListening(intentRecognizer)
-        }
-
-        binding.stopButton.setOnClickListener {
-            speechRecognizer.stopListening()
-        }
+//        binding.startButton.setOnClickListener {
+//            speechRecognizer.startListening(intentRecognizer)
+//        }
+//
+//        binding.stopButton.setOnClickListener {
+//            speechRecognizer.stopListening()
+//        }
     }
 
     private fun setUserPermissions() {
