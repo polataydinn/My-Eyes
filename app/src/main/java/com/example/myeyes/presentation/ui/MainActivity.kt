@@ -26,8 +26,6 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var speechRecognizer: SpeechRecognizer
-    private lateinit var intentRecognizer: Intent
     private lateinit var navController: NavController
 
 
@@ -36,17 +34,15 @@ class MainActivity : AppCompatActivity() {
         setTheme(R.style.Theme_MyEyes)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        setUserPermissions()
         binding.bottomNavigation.background = null
 
         val navView: BottomNavigationView = binding.bottomNavigation
         navController = findNavController(R.id.fragmentContainerView)
 
-        AppBarConfiguration.Builder(
-            setOf(
+        val appBarConfiguration = AppBarConfiguration.Builder(
                 R.id.homeFragment,
                 R.id.personFragment
-            )
         ).build()
         navView.setupWithNavController(navController)
 
@@ -56,67 +52,6 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.fragmentContainerView, cameraFragment)
                 .commit()
         }
-
-
-        setUserPermissions()
-        intentRecognizer = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        intentRecognizer.putExtra(
-            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-        )
-
-
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this)
-        speechRecognizer.setRecognitionListener(object : RecognitionListener {
-            override fun onReadyForSpeech(p0: Bundle?) {
-
-            }
-
-            override fun onBeginningOfSpeech() {
-
-            }
-
-            override fun onRmsChanged(p0: Float) {
-
-            }
-
-            override fun onBufferReceived(p0: ByteArray?) {
-
-            }
-
-            override fun onEndOfSpeech() {
-
-            }
-
-            override fun onError(p0: Int) {
-
-            }
-
-            override fun onResults(bundle: Bundle?) {
-                val matches: ArrayList<String>? =
-                    bundle?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-//                if (matches != null) {
-//                    binding.textView.text = matches.get(0)
-//                }
-            }
-
-            override fun onPartialResults(p0: Bundle?) {
-
-            }
-
-            override fun onEvent(p0: Int, p1: Bundle?) {
-
-            }
-
-        })
-
-//        binding.startButton.setOnClickListener {
-//            speechRecognizer.startListening(intentRecognizer)
-//        }
-//
-//        binding.stopButton.setOnClickListener {
-//            speechRecognizer.stopListening()
-//        }
     }
 
     private fun setUserPermissions() {
